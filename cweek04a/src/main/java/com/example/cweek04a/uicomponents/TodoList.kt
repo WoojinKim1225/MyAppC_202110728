@@ -1,5 +1,6 @@
 package com.example.cweek04a.uicomponents
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,9 +24,14 @@ fun TodoList(todoList: MutableList<Item>, showPending: Boolean = false, modifier
     ) {
         todoList.forEachIndexed { index, item ->
             if (!showPending || item.status == TodoStatus.PENDING) {
-                Card(modifier = Modifier.fillMaxWidth()) {
+                var checked by remember { mutableStateOf(item.status == TodoStatus.COMPLETED) }
+                Card(modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable{
+                        checked = !checked
+                        todoList[index] = item.copy(status = if (checked) TodoStatus.COMPLETED else TodoStatus.PENDING)
+                    }) {
                     Row(modifier = Modifier.padding(8.dp)) {
-                        var checked by remember { mutableStateOf(item.status == TodoStatus.COMPLETED) }
                         TodoCheckBox(checked) {
                             checked = !checked
                             todoList[index] = item.copy(status = if (checked) TodoStatus.COMPLETED else TodoStatus.PENDING)
